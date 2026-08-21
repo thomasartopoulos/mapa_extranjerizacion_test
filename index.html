@@ -97,11 +97,11 @@
             body{flex-direction:column}
             .sidebar{width:100%;order:1;height:auto;z-index:2500;overflow:visible}
             #map{order:2;flex:1;min-height:55vh;z-index:1}
-            .sidebar-header{flex-direction:row;justify-content:space-between;padding:10px 12px;gap:10px;}
-            .logos-wrap{width:auto;justify-content:flex-start;gap:12px;}
-            .logos-wrap img{max-height:36px;}
-            .sidebar-header-txt{text-align:right;min-width:0;flex:1;}
-            h1{font-size:1.3rem;}
+            .sidebar-header{flex-direction:row;justify-content:space-between;align-items:center;padding:10px 12px;gap:8px;min-width:0;overflow:hidden;}
+            .logos-wrap{width:auto;justify-content:flex-start;gap:8px;flex:0 1 auto;min-width:0;}
+            .logos-wrap img{max-height:30px;max-width:100%;}
+            .sidebar-header-txt{text-align:right;min-width:0;flex:1 1 auto;overflow:hidden;}
+            h1{font-size:clamp(0.85rem,4.3vw,1.3rem);line-height:1.05;overflow-wrap:break-word;}
             .filtros-row{flex-wrap:nowrap;gap:8px}
             .filtros-row select{flex:1 1 0;width:auto;min-width:0;padding:7px 22px 7px 8px;font-size:0.66rem;text-overflow:ellipsis}
             .btn-ctrl{flex:0 0 auto;width:34px;height:34px;padding:0;border-radius:50%;font-size:1.15rem;line-height:1}
@@ -115,6 +115,11 @@
             .color-dot.pattern{background:repeating-linear-gradient(45deg,#f0c095,#f0c095 2px,transparent 2px,transparent 5px);border:1px solid #f0c095}
             .color-dot.predio{background:transparent;border:2px dashed #a3e635;border-radius:2px}
             .mobile-info-text{display:none;background:rgba(15,23,42,0.95);border:1px solid #80A162;border-radius:8px;padding:12px;margin-top:5px;position:absolute;top:10px;left:10px;right:10px;z-index:2000;box-shadow:0 5px 15px rgba(0,0,0,0.5)}
+        }
+        @media(max-width:400px){
+            .logos-wrap{gap:6px;}
+            .logos-wrap img{max-height:26px;}
+            .sidebar-header{padding:9px 10px;gap:6px;}
         }
         .btn-export{display:block;width:100%;padding:7px;margin-bottom:6px;background:#E7D58A;color:#0f172a;border:none;border-radius:8px;cursor:pointer;font-family:'Teko',sans-serif;font-size:1rem;letter-spacing:0.5px;text-transform:uppercase;font-weight:700}
         .btn-export:hover{background:#f0e4a8}
