@@ -1,0 +1,43 @@
+name: Actualizar conflictos
+
+# Baja la planilla de conflictos territoriales y actualiza conflictos.json.
+# El index.html lo lee del mismo origen, así que esquiva el CORS del CSV
+# publicado de Google.
+
+on:
+  schedule:
+    # 06:00 UTC = 03:00 en Argentina
+    - cron: '0 6 * * *'
+  workflow_dispatch:        # botón "Run workflow" en la pestaña Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: conflictos
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Bajar y sanear la planilla
+        run: python scripts/actualizar_conflictos.py
+
+      - name: Commitear si cambió
+        run: |
+          if [ -z "$(git status --porcelain conflictos.json)" ]; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add conflictos.json
+          git commit -m "conflictos: actualización automática"
+          git push
