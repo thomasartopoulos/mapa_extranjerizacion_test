@@ -37,13 +37,13 @@ SHEET_CSV_URL = os.environ.get("SHEET_CSV_URL", "").strip() or (
 )
 SALIDA = Path(os.environ.get("SALIDA", "conflictos.json"))
 
-# Fila de encabezados dentro de la planilla (1-indexado, como se ve en el Sheet).
-# La fila 1 de "Hoja 1" son títulos de sección fusionados ("DATOS VISIBLES EN EL
-# MAPA", "DATOS INVISIBLES", "GEORREFERENCIACION"); los encabezados reales de
-# columna (Provincia, Departamento, ..., provincia_norm ... georef_fecha) están
-# en la fila 2, y los datos arrancan en la fila 3. Mismo ajuste que se hizo en
-# el Apps Script de georreferenciación (ver claude/georef-apps-script.md).
-FILA_ENCABEZADO = int(os.environ.get("FILA_ENCABEZADO", "2"))
+# Fila de encabezados dentro del CSV publicado (1-indexado). El CSV que baja
+# este script es el de la pestaña "Publicacion" (confirmado corriendo la
+# Action: el gid 1400968737 trae sólo las 11 columnas visibles, sin la fila de
+# títulos de sección que sí tiene "Hoja 1"), así que acá no hay fila extra:
+# encabezados en la fila 1, datos desde la fila 2. Se deja configurable por si
+# el gid publicado cambia de pestaña más adelante.
+FILA_ENCABEZADO = int(os.environ.get("FILA_ENCABEZADO", "1"))
 IDX_ENCABEZADO = FILA_ENCABEZADO - 1  # índice 0-based dentro de las filas del CSV
 
 # Alias tolerantes de encabezados: se comparan sin acentos y en minúscula.
@@ -98,6 +98,26 @@ def normalizar(texto):
     return sin_acentos.lower().strip()
 
 
+def _coincide(header_norm, alias_norm):
+    """True si el encabezado (ya normalizado) es igual al alias, o si el alias
+    aparece como las ÚLTIMAS palabras del encabezado.
+
+    Hace falta por la columna A de "Publicacion": su encabezado real no es
+    "Provincia" sino "DATOS VISIBLES EN EL MAPA Provincia" — el título de
+    sección de "Hoja 1" quedó pegado adelante, probablemente por la fórmula
+    que arma esta pestaña a partir de la original. El resto de los
+    encabezados no tiene este problema y matchea por igualdad exacta como
+    antes; esto es sólo una red de seguridad adicional.
+    """
+    if not alias_norm:
+        return False
+    if header_norm == alias_norm:
+        return True
+    alias_pal = alias_norm.split()
+    header_pal = header_norm.split()
+    return len(alias_pal) <= len(header_pal) and header_pal[-len(alias_pal):] == alias_pal
+
+
 def redactar_pii(valor):
     for pat, reemplazo in PATRONES_PII:
         valor = pat.sub(reemplazo, valor)
@@ -130,8 +150,10 @@ def sanear(texto_csv):
     idx = {}
     for destino, alias in SHEET_COLS.items():
         for a in alias:
-            if a in headers:
-                idx[destino] = headers.index(a)
+            alias_norm = normalizar(a)
+            pos = next((i for i, h in enumerate(headers) if _coincide(h, alias_norm)), None)
+            if pos is not None:
+                idx[destino] = pos
                 break
     if 'provincia' not in idx:
         raise SystemExit(
