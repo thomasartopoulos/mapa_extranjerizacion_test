@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Baja la planilla de conflictos territoriales y escribe conflictos.json.
+
 Lo corre una GitHub Action una vez por día. El index.html lee ese JSON del mismo
 origen, así que no hay problema de CORS: el CSV publicado de Google redirige a
 googleusercontent.com, que no manda cabecera Access-Control-Allow-Origin, y por
 eso el navegador nunca puede leerlo directo.
+
 Sólo librería estándar, a propósito: la Action arranca en segundos y no depende
 de nada que se pueda romper.
+
 Qué NO publica:
   · La columna de contacto del vocero (y variantes). No está en SHEET_COLS, así
     que ni se lee. Son referentes de conflictos con represión y desalojos, y
@@ -15,10 +18,12 @@ Qué NO publica:
     una segunda línea de defensa: si un encabezado con coma quedó mal
     entrecomillado, las columnas se corren y el teléfono puede terminar en
     "Observaciones".
+
 La geolocalización (centroide del departamento, dispersión de los que comparten
 uno) la hace el JS del mapa con la misma geometría que dibuja, así que acá sólo
 se sanea texto.
 """
+
 import csv
 import io
 import json
@@ -37,34 +42,27 @@ SHEET_CSV_URL = os.environ.get("SHEET_CSV_URL", "").strip() or (
 )
 SALIDA = Path(os.environ.get("SALIDA", "conflictos.json"))
 
-# Fila de encabezados dentro del CSV publicado (1-indexado). El CSV que baja
-# este script es el de la pestaña "Publicacion" (confirmado corriendo la
-# Action: el gid 1400968737 trae sólo las 11 columnas visibles, sin la fila de
-# títulos de sección que sí tiene "Hoja 1"), así que acá no hay fila extra:
-# encabezados en la fila 1, datos desde la fila 2. Se deja configurable por si
-# el gid publicado cambia de pestaña más adelante.
-FILA_ENCABEZADO = int(os.environ.get("FILA_ENCABEZADO", "1"))
-IDX_ENCABEZADO = FILA_ENCABEZADO - 1  # índice 0-based dentro de las filas del CSV
-
 # Alias tolerantes de encabezados: se comparan sin acentos y en minúscula.
 SHEET_COLS = {
     'provincia':     ('provincia',),
     'departamento':  ('departamento', 'depto', 'partido'),
     'localidad':     ('localidad', 'paraje', 'lugar'),
+    # columnas que escribe el Apps Script de Georef en la planilla
+    'provincia_norm':    ('provincia_norm',),
+    'departamento_norm': ('departamento_norm',),
+    'localidad_norm':    ('localidad_norm',),
     'lat':           ('lat', 'latitud', 'latitude', 'y'),
     'lon':           ('lon', 'lng', 'long', 'longitud', 'longitude', 'x'),
     'precision':     ('precision', 'precision_geo', 'geo_precision'),
-    'comunidad':     ('comunidad / caso', 'comunidad/caso', 'comunidad', 'caso'),
+    'comunidad':     ('comunidad',),
     'inicio':        ('inicio del conflicto', 'inicio'),
     'familias':      ('cantidad de famlias afectadas',      # typo en la planilla
                       'cantidad de familias afectadas', 'familias'),
     'hectareas':     ('hectareas afectadas', 'hectareas', 'superficie'),
     'motivo':        ('motivo del conflicto', 'motivo'),
-    'grupo':         ('conflicto con: (grupo economico / empresario)',
-                      'conflicto con (grupo economico / empresario)',
-                      'grupo economico/empresario', 'grupo economico', 'empresa'),
+    'grupo':         ('grupo economico/empresario', 'grupo economico', 'empresa'),
     'observaciones': ('observaciones (represion, orden desalojo)', 'observaciones'),
-    'estado':        ('estado (activo / latente / resuelto)', 'estado'),
+    'estado':        ('estado',),
     'fuente':        ('fuente de informacion', 'fuente'),
     'enlace':        ('link', 'enlace', 'url'),
     'juzgado':       ('juzgado/ dependencia judicial', 'juzgado/dependencia judicial', 'juzgado'),
@@ -72,6 +70,7 @@ SHEET_COLS = {
     'inai':          ('situacion del relevamiento de inai (finalizado, en tramite, sin relevar)',
                       'situacion del relevamiento de inai', 'inai'),
 }
+
 SHEET_COLS_EXCLUIDAS = ('contacto con vocero del conflicto', 'contacto con vocero',
                         'contacto', 'vocero', 'telefono', 'teléfono', 'email', 'mail')
 
@@ -86,6 +85,7 @@ PATRONES_PII = [
                 r'((?:\+?54[\s\-]?)?(?:9[\s\-]?)?(?:\(?0?\d{2,4}\)?[\s\-]?)(?:15[\s\-]?)?\d{3,4}[\s\-]?\d{4})'
                 r'(?![\d]|[.,\-]\d)'), r'\1[dato de contacto omitido]'),
 ]
+
 # Columnas que nunca se redactan: son coordenadas, no texto libre.
 COLS_SIN_REDACTAR = ('lat', 'lon')
 
@@ -98,31 +98,73 @@ def normalizar(texto):
     return sin_acentos.lower().strip()
 
 
-def _coincide(header_norm, alias_norm):
-    """True si el encabezado (ya normalizado) es igual al alias, o si el alias
-    aparece como las ÚLTIMAS palabras del encabezado.
-
-    Hace falta por la columna A de "Publicacion": su encabezado real no es
-    "Provincia" sino "DATOS VISIBLES EN EL MAPA Provincia" — el título de
-    sección de "Hoja 1" quedó pegado adelante, probablemente por la fórmula
-    que arma esta pestaña a partir de la original. El resto de los
-    encabezados no tiene este problema y matchea por igualdad exacta como
-    antes; esto es sólo una red de seguridad adicional.
-    """
-    if not alias_norm:
-        return False
-    if header_norm == alias_norm:
-        return True
-    alias_pal = alias_norm.split()
-    header_pal = header_norm.split()
-    return len(alias_pal) <= len(header_pal) and header_pal[-len(alias_pal):] == alias_pal
-
-
 def redactar_pii(valor):
     for pat, reemplazo in PATRONES_PII:
         valor = pat.sub(reemplazo, valor)
     return valor
 
+
+def mapear_encabezados(headers):
+    """Empareja los encabezados del sheet con los campos internos.
+
+    No alcanza con comparar por igualdad: la planilla se edita a mano y los
+    títulos vienen con el nombre de la sección pegado adelante ("DATOS VISIBLES
+    EN EL MAPA Provincia") o con aclaraciones atrás ("ESTADO (activo / latente /
+    resuelto)"). Primero se busca igualdad exacta y después que el encabezado
+    CONTENGA el alias como palabra entera. El segundo paso sólo vale para alias
+    de 5 letras o más: con 'lat' o 'x' la coincidencia por contenido sería una
+    lotería. Una columna ya asignada no se vuelve a ofrecer.
+
+    `headers` viene ya normalizado (sin acentos, en minúscula, sin espacios
+    alrededor). Devuelve {campo: índice de columna}.
+    """
+    idx, usados = {}, set()
+
+    for destino, alias in SHEET_COLS.items():
+        for a in alias:
+            for i, h in enumerate(headers):
+                if i not in usados and h == a:
+                    idx[destino] = i
+                    usados.add(i)
+                    break
+            if destino in idx:
+                break
+
+    for destino, alias in SHEET_COLS.items():
+        if destino in idx:
+            continue
+        mejor = None
+        for a in alias:
+            if len(a) < 5:
+                continue
+            pat = re.compile(r'(?<![a-z0-9])' + re.escape(a) + r'(?![a-z0-9])')
+            for i, h in enumerate(headers):
+                if i in usados or not pat.search(h):
+                    continue
+                # ante varios, gana el encabezado más corto: es el más específico
+                if mejor is None or len(h) < len(headers[mejor]):
+                    mejor = i
+        if mejor is not None:
+            idx[destino] = mejor
+            usados.add(mejor)
+
+    return idx
+
+def elegir_fila_encabezado(filas, max_filas=5):
+    """Devuelve el índice de la fila que mejor funciona como encabezado.
+
+    La fila 1 de la planilla son títulos de sección fusionados ("DATOS VISIBLES
+    EN EL MAPA", "GEORREFERENCIACION") y los encabezados reales están en la 2.
+    Fijar el número se rompe en cuanto alguien agrega o saca una fila, así que
+    se prueban las primeras y gana la que reconoce más columnas.
+    """
+    mejor, mejor_puntaje = 0, -1
+    for i in range(min(max_filas, len(filas))):
+        idx = mapear_encabezados([normalizar(h) for h in filas[i]])
+        puntaje = len(idx) + (5 if 'provincia' in idx else 0)
+        if puntaje > mejor_puntaje:
+            mejor, mejor_puntaje = i, puntaje
+    return mejor
 
 def bajar_csv(url):
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (PRIHA bot)'})
@@ -132,36 +174,32 @@ def bajar_csv(url):
 
 def sanear(texto_csv):
     filas = [f for f in csv.reader(io.StringIO(texto_csv)) if any(str(c).strip() for c in f)]
-    if len(filas) <= IDX_ENCABEZADO:
-        raise SystemExit(
-            f"El sheet no tiene ni la fila de encabezados (fila {FILA_ENCABEZADO}); "
-            f"llegaron {len(filas)} fila(s) no vacías.")
+    if len(filas) < 2:
+        raise SystemExit("El sheet vino vacío o sin filas de datos.")
 
-    headers_crudos = filas[IDX_ENCABEZADO]
-    headers = [normalizar(h) for h in headers_crudos]
-    filas_datos = filas[IDX_ENCABEZADO + 1:]
-    if not filas_datos:
-        raise SystemExit("El sheet no tiene filas de datos debajo del encabezado.")
+    fh = elegir_fila_encabezado(filas)
+    if fh:
+        print(f"  encabezados leídos de la fila {fh + 1} del CSV")
+    headers = [normalizar(h) for h in filas[fh]]
 
-    sensibles = [headers_crudos[i] for i, h in enumerate(headers) if h in SHEET_COLS_EXCLUIDAS]
+    sensibles = [filas[fh][i] for i, h in enumerate(headers) if h in SHEET_COLS_EXCLUIDAS]
     if sensibles:
         print(f"  columnas sensibles ignoradas (no se publican): {sensibles}")
 
-    idx = {}
-    for destino, alias in SHEET_COLS.items():
-        for a in alias:
-            alias_norm = normalizar(a)
-            pos = next((i for i, h in enumerate(headers) if _coincide(h, alias_norm)), None)
-            if pos is not None:
-                idx[destino] = pos
-                break
+    idx = mapear_encabezados(headers)
     if 'provincia' not in idx:
-        raise SystemExit(
-            f"No encontré la columna Provincia en la fila {FILA_ENCABEZADO}. "
-            f"Encabezados: {headers_crudos}")
+        raise SystemExit(f"No encontré la columna Provincia. Encabezados: {filas[fh]}")
+
+    print("  columnas reconocidas:")
+    for destino in SHEET_COLS:
+        if destino in idx:
+            print(f"    {destino:<14} <- {filas[fh][idx[destino]].strip()!r}")
+    ignoradas = [filas[fh][i].strip() for i in range(len(filas[fh])) if i not in set(idx.values())]
+    if ignoradas:
+        print(f"  encabezados sin usar: {ignoradas}")
 
     salida, redactadas = [], 0
-    for fila in filas_datos:
+    for fila in filas[fh + 1:]:
         reg = {}
         for destino, i in idx.items():
             crudo = fila[i].strip() if i < len(fila) else ''
@@ -185,15 +223,18 @@ def sanear(texto_csv):
 def main():
     print(f"Bajando {SHEET_CSV_URL[:80]}…")
     filas = sanear(bajar_csv(SHEET_CSV_URL))
+
     # No pisar datos buenos con una respuesta vacía por un problema pasajero.
     if not filas:
         if SALIDA.exists():
             raise SystemExit("El sheet no devolvió filas; dejo el conflictos.json anterior.")
         raise SystemExit("El sheet no devolvió filas y no hay archivo previo.")
+
     nuevo = {
         "actualizado": datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z'),
         "filas": filas,
     }
+
     # Si sólo cambió la marca de tiempo, no commitear: evita un commit por día
     # sin contenido real.
     if SALIDA.exists():
@@ -204,6 +245,7 @@ def main():
                 return
         except Exception:
             pass
+
     SALIDA.write_text(json.dumps(nuevo, ensure_ascii=False, indent=1), encoding='utf-8')
     print(f"Escrito {SALIDA} ({len(filas)} filas)")
 
