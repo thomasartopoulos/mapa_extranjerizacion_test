@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-01T10:38:00Z",
+ "actualizado": "2026-09-02T13:43:31Z",
  "filas": [
   {
    "departamento": "Antofagasta de la Sierra",
@@ -25,7 +25,7 @@
    "provincia": "Jujuy",
    "comunidad": "Comunidad Indígena Las Capillas — Pueblo Ocloya",
    "grupo": "Compañía Minera Piuquenes S.A. — querellante en la causa penal. Representada por el abogado Arturo Pfister Puch, presidente de la Cámara Minera de Jujuy; patrocinada por Lisandro Gualchi.",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Humahuaca",
@@ -38,7 +38,7 @@
    "provincia": "Jujuy",
    "comunidad": "Santa Rosa",
    "grupo": "",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Libertador General San Martin",
@@ -51,7 +51,7 @@
    "provincia": "Misiones",
    "comunidad": "Mbya Guaraní Puente Quemado II",
    "grupo": "Alfredo Ruff (empresario forestal)",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Los Lagos",
@@ -64,7 +64,7 @@
    "provincia": "Neuquén",
    "comunidad": "Lof Kinxikew y Lof Melo",
    "grupo": "María Cristina Broers (de origen belga)",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "",
@@ -77,7 +77,7 @@
    "provincia": "Salta",
    "comunidad": "Las Pailas",
    "grupo": "Wayar",
-   "estado": "latente"
+   "estado": "Latente"
   },
   {
    "departamento": "Molinos",
@@ -90,7 +90,7 @@
    "provincia": "Salta",
    "comunidad": "El Churcal (Diaguita)",
    "grupo": "Familia Gutierrez y extranjeros (No se sabe nombre)",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "San Martin",
@@ -103,7 +103,7 @@
    "provincia": "Salta",
    "comunidad": "",
    "grupo": "Desdelsur SA. (Macera y Blaquier)",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Copo",
@@ -116,7 +116,7 @@
    "provincia": "Santiago del Estero",
    "comunidad": "Piruaj Bajo",
    "grupo": "Sacha Rupaska (Caputo)",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Figueroa",
@@ -155,7 +155,7 @@
    "provincia": "Santiago del Estero",
    "comunidad": "El Chañaral (pueblo Sanavirón)",
    "grupo": "Rodolfo Balbi",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Gral Taboada",
@@ -194,7 +194,7 @@
    "provincia": "Santiago del Estero",
    "comunidad": "Lote 48 - Comunidad Nockaishpa Pachamama (pueblo Vilela)",
    "grupo": "Francoise Lannou (Francés)",
-   "estado": "activo"
+   "estado": "Activo"
   },
   {
    "departamento": "Mitre",
@@ -363,7 +363,124 @@
    "provincia": "Catamarca",
    "comunidad": "",
    "grupo": "Tauil",
-   "estado": "latente"
+   "estado": "Latente"
+  },
+  {
+   "departamento": "San Pedro",
+   "localidad": "San Pedro",
+   "inicio": "2022",
+   "familias": "125",
+   "hectareas": "",
+   "motivo": "Desalojos, quemas de casas y cultivos Multinacional ARAUCO",
+   "enlace": "",
+   "provincia": "Misiones",
+   "comunidad": "Puerto Argentino",
+   "grupo": "Arauco",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "Delicia",
+   "localidad": "Delicia",
+   "inicio": "2020",
+   "familias": "100",
+   "hectareas": "",
+   "motivo": "Quiebra de empresa- familias se asientan y producen",
+   "enlace": "",
+   "provincia": "Misiones",
+   "comunidad": "Delicia - Paraje El Progreso",
+   "grupo": "Empesa Cotopaxi",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "San Ignacio",
+   "localidad": "San Ignacio",
+   "inicio": "2011",
+   "familias": "",
+   "hectareas": "",
+   "motivo": "Sentencia de Desalojo",
+   "enlace": "",
+   "provincia": "Misiones",
+   "comunidad": "Colonia Isolina",
+   "grupo": "",
+   "estado": ""
+  },
+  {
+   "departamento": "Belén",
+   "localidad": "Aguas Calientes",
+   "inicio": "2021",
+   "familias": "40",
+   "hectareas": "",
+   "motivo": "Extractivismo/terratenientes/titulación de la tierra/servicios básicos",
+   "enlace": "",
+   "provincia": "Catamarca",
+   "comunidad": "Comunidad Indígena de Peñas Negras",
+   "grupo": "Elevado Gold/CAMYEN/Loro Piana",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "Belén",
+   "localidad": "Corral Blanco",
+   "inicio": "1970",
+   "familias": "80",
+   "hectareas": "",
+   "motivo": "Terratenientes/titulación de la tierra/servicios básicos",
+   "enlace": "",
+   "provincia": "Catamarca",
+   "comunidad": "Comunidad Indígena de Corral Blanco",
+   "grupo": "Sucesión Indalecio Pachado (familia terrateniente)",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "Belén",
+   "localidad": "Laguna Blanca",
+   "inicio": "2024",
+   "familias": "70",
+   "hectareas": "",
+   "motivo": "Extractivismo/titulación de la tierra/servicios básicos",
+   "enlace": "",
+   "provincia": "Catamarca",
+   "comunidad": "Comunidad Indígena de Laguna Blanca",
+   "grupo": "Loro Piana",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "Antogasta de la Sierra",
+   "localidad": "Antofagasta de la Sierra",
+   "inicio": "",
+   "familias": "20",
+   "hectareas": "",
+   "motivo": "Extractivismo de litio",
+   "enlace": "",
+   "provincia": "Catamarca",
+   "comunidad": "Comunidad Diaguita de Carachi Pampa",
+   "grupo": "Morena del Valle Minerales",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "Capital",
+   "localidad": "San Fernando del Valle de Catamarca",
+   "inicio": "2024",
+   "familias": "200",
+   "hectareas": "",
+   "motivo": "Proyecto infraestructura vial/servicios básicos",
+   "enlace": "",
+   "provincia": "Catamarca",
+   "comunidad": "Barrio Mi Gauchito",
+   "grupo": "Gobierno de la Provincia de Catamarca",
+   "estado": "Activo"
+  },
+  {
+   "departamento": "Capital",
+   "localidad": "San Fernando del Valle de Catamarca",
+   "inicio": "2023",
+   "familias": "36",
+   "hectareas": "",
+   "motivo": "Acceso al suelo/ servicios basicos",
+   "enlace": "",
+   "provincia": "Catamarca",
+   "comunidad": "Loteo Parque Sur",
+   "grupo": "Gobierno Provincial y Municipal de Catamarca",
+   "estado": "Activo"
   },
   {
    "departamento": "GRAL. GUEMES",
@@ -376,20 +493,20 @@
    "provincia": "CHACO",
    "comunidad": "RESERVA 10.000 HAS/QOM WICHI",
    "grupo": "GOBIERNO CHACO",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "LIBERTADOR GRAL. SAN MARTIN",
    "localidad": "PAMPA DEL INDIO",
    "inicio": "2010",
    "familias": "",
-   "hectareas": "",
+   "hectareas": "329,42",
    "motivo": "ASENTAMIENTO SOBRE TERRENO PRIVADO",
    "enlace": "",
    "provincia": "CHACO",
    "comunidad": "BERDUM/QOM",
    "grupo": "GOBIERNO CHACO",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "LIBERTADOR GRAL. SAN MARTIN",
@@ -402,7 +519,7 @@
    "provincia": "CHACO",
    "comunidad": "CAMPO WINTER/ QOM",
    "grupo": "GOBIERNO CHACO",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "GRAL. DONOVAN",
@@ -415,20 +532,20 @@
    "provincia": "CHACO",
    "comunidad": "JUAN PENKO/ CRIOLLOS",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "LIBERTADOR GRAL. SAN MARTIN",
    "localidad": "PAMPA DEL INDIO",
    "inicio": "",
    "familias": "",
-   "hectareas": "",
+   "hectareas": "94,75",
    "motivo": "CEMENTERIO ORIGINSRIO SOBRE TIERRA PRIVADA",
    "enlace": "",
    "provincia": "CHACO",
    "comunidad": "LOTE 39/ QOM",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "MAYOR LUIS FONTANA",
@@ -441,7 +558,7 @@
    "provincia": "CHACO",
    "comunidad": "LOTE 27 PASTORIL / MOQOIT",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "SAN FERNANDO",
@@ -454,7 +571,7 @@
    "provincia": "CHACO",
    "comunidad": "BARRIO LAVALLE/ QOM CRIOLLOS",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "SAN FERNANDO",
@@ -467,7 +584,7 @@
    "provincia": "CHACO",
    "comunidad": "ASENTAMIENTO VARGAS 2/ CRIOLLOS",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "LIBERTADOR GRAL. SAN MARTIN",
@@ -480,7 +597,7 @@
    "provincia": "CHACO",
    "comunidad": "BARRIO 24 DE ABRIL/ QOM",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "COMANDANTE FERNANDEZ",
@@ -493,7 +610,7 @@
    "provincia": "CHACO",
    "comunidad": "BARRIO LAS MONJITAS",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "COMANDANTE FERNANDEZ",
@@ -506,7 +623,7 @@
    "provincia": "CHACO",
    "comunidad": "YRIGOYEN/",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "LIBERTADOR GRAL. SAN MARTIN",
@@ -519,7 +636,7 @@
    "provincia": "CHACO",
    "comunidad": "MAIDANA/ CRIOLLOS",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "LIBERTADOR GRAL. SAN MARTIN",
@@ -532,7 +649,7 @@
    "provincia": "CHACO",
    "comunidad": "LENCINAS/CRIOLLOS",
    "grupo": "FIDUC",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   },
   {
    "departamento": "BERMEJO",
@@ -545,7 +662,7 @@
    "provincia": "CHACO",
    "comunidad": "LAGUNA PATOS/QOM CRIOLLOS",
    "grupo": "PARTICULAR",
-   "estado": "ACTIVO"
+   "estado": "Activo"
   }
  ]
 }
