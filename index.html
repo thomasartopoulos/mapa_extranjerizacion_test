@@ -1220,7 +1220,7 @@
              ['Motivo', p.motivo],
              ['Familias afectadas', p.familias],
              ['Hectáreas', p.hectareas ? (/^[\d.,\s]+$/.test(p.hectareas) ? p.hectareas + ' ha' : p.hectareas) : ''],
-             ['Grupo económico', p.grupo],
+             ['Conflicto con', p.grupo],
              ['Relevamiento INAI', p.inai],
              ['Juzgado', p.juzgado]].forEach(function(kv){
                 if (kv[1]) html += '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px 3px 0;vertical-align:top;"><b>' + kv[0] + ':</b></td><td style="text-align:right;">' + esc(kv[1]) + '</td></tr>';
