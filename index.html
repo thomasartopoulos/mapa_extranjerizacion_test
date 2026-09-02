@@ -997,31 +997,35 @@
 
         /* Alias tolerantes de encabezados. La columna de contacto del vocero NO
            está acá a propósito: es dato personal y no se publica. */
+        /* Encabezados EXACTOS de la planilla (normalizados: sin acentos, en
+           minúscula, sin espacios en los bordes). Sin sinónimos ni adivinanzas:
+           si un encabezado cambia en el Excel, hay que cambiarlo acá. */
         const SHEET_ALIAS = {
             provincia:    ['provincia'],
-            departamento: ['departamento', 'depto', 'partido'],
-            localidad:    ['localidad', 'paraje', 'lugar'],
+            departamento: ['departamento'],
+            localidad:    ['localidad'],
+            comunidad:    ['comunidad / caso'],
+            estado:       ['estado (activo / latente / resuelto)'],
+            inicio:       ['inicio del conflicto'],
+            familias:     ['cantidad de famlias afectadas'],   // typo real de la planilla
+            hectareas:    ['hectareas afectadas'],
+            motivo:       ['motivo del conflicto'],
+            grupo:        ['conflicto con: (grupo economico / empresario)'],
+            enlace:       ['link'],
             // columnas que escribe el Apps Script de Georef en la planilla
             provincia_norm:    ['provincia_norm'],
             departamento_norm: ['departamento_norm'],
             localidad_norm:    ['localidad_norm'],
-            lat:          ['lat', 'latitud', 'latitude', 'y'],
-            lon:          ['lon', 'lng', 'long', 'longitud', 'longitude', 'x'],
-            precision:    ['precision', 'precision_geo', 'geo_precision'],
-            comunidad:    ['comunidad'],
-            inicio:       ['inicio del conflicto', 'inicio'],
-            familias:     ['cantidad de famlias afectadas', 'cantidad de familias afectadas', 'familias'],
-            hectareas:    ['hectareas afectadas', 'hectareas', 'superficie'],
-            motivo:       ['motivo del conflicto', 'motivo'],
-            grupo:        ['grupo economico/empresario', 'grupo economico', 'empresa'],
-            observaciones:['observaciones (represion, orden desalojo)', 'observaciones'],
-            estado:       ['estado'],
-            fuente:       ['fuente de informacion', 'fuente'],
-            enlace:       ['link', 'enlace', 'url'],
-            juzgado:      ['juzgado/ dependencia judicial', 'juzgado/dependencia judicial', 'juzgado'],
-            otra_info:    ['otra info del conflicto (del caso/judicial)', 'otra info del conflicto'],
-            inai:         ['situacion del relevamiento de inai (finalizado, en tramite, sin relevar)',
-                           'situacion del relevamiento de inai', 'inai']
+            lat:          ['lat'],
+            lon:          ['lon'],
+            precision:    ['precision'],
+            // sólo si estas columnas siguen existiendo con este nombre exacto;
+            // si no están, no matchean nada y el popup omite la fila
+            observaciones:['observaciones (represion, orden desalojo)'],
+            fuente:       ['fuente de informacion'],
+            juzgado:      ['juzgado/ dependencia judicial'],
+            otra_info:    ['otra info del conflicto (del caso/judicial)'],
+            inai:         ['situacion del relevamiento de inai (finalizado, en tramite, sin relevar)']
         };
 
         /* Segunda línea de defensa: si una columna corrida mete un teléfono o un
@@ -1270,7 +1274,14 @@
                 const resp = await fetch(CONFLICTOS_JSON + '?_cb=' + Date.now());
                 if (resp.ok) {
                     const j = await resp.json();
-                    const filas = Array.isArray(j) ? j : (j.filas || []);
+                    /* conflictos.json puede venir con claves internas (formato
+                       viejo) o con los encabezados textuales del Excel, en el
+                       orden de la planilla (formato nuevo del script). En el
+                       segundo caso se remapea con el mismo emparejador que usa
+                       la lectura de CSV. */
+                    const crudas = Array.isArray(j) ? j : (j.filas || []);
+                    const filas = remapearFilasJSON(crudas,
+                        (!Array.isArray(j) && j.columnas) || null);
                     const fc = filasAGeoJSON(filas);
                     if (fc.features.length) {
                         aportesOrigen = 'json';
@@ -1285,6 +1296,28 @@
             _aportesCache = filasAGeoJSON(APORTES_FILAS);
             return _aportesCache;
         }
+        /* Convierte filas cuyas claves son los encabezados textuales del Excel
+           al vocabulario interno del mapa (provincia, lat, lon, grupo, …).
+           Si las filas ya vienen con claves internas, se devuelven tal cual. */
+        function remapearFilasJSON(filas, columnas){
+            if (!filas.length || filas[0].provincia !== undefined) return filas;
+            const headersOrig = (columnas && columnas.length)
+                ? columnas : Object.keys(filas[0]);
+            const idx = mapearEncabezados(headersOrig.map(normHeader));
+            if (idx.provincia == null) {
+                console.warn('conflictos.json sin columna Provincia:', headersOrig);
+                return [];
+            }
+            return filas.map(function(f){
+                const r = {};
+                Object.keys(idx).forEach(function(k){
+                    const crudo = String(f[headersOrig[idx[k]]] || '').trim();
+                    r[k] = (k === 'lat' || k === 'lon') ? crudo : redactarPII(crudo);
+                });
+                return r;
+            }).filter(r => Object.keys(r).some(k => r[k]));
+        }
+
         /* El origen y la cantidad quedan sólo en la consola: la leyenda muestra
            una sola referencia y no un contador. */
         function marcarEstadoAportes(n){
