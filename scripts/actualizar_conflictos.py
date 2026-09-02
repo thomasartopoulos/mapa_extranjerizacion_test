@@ -36,9 +36,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 SHEET_CSV_URL = os.environ.get("SHEET_CSV_URL", "").strip() or (
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQX-bXajP4517XhNPSYbGiEWIGzEJTBB"
-    "_8CYe-kq7Th1giq6osVVsV2VghWoedipxwTUNMozyCdwv3P/pub"
-    "?gid=1400968737&single=true&output=csv"
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vTMoLBFDGIitw7vbPQ23M6FkxWqk8PmZIjyGDbIBGBoqkLiD5KATD-ueREzbp-9pp1vdg4sZ_V4D6Am/pub?gid=1240607916&single=true&output=csv"
 )
 SALIDA = Path(os.environ.get("SALIDA", "conflictos.json"))
 
