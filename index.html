@@ -1224,10 +1224,11 @@
              ['Motivo', p.motivo],
              ['Familias afectadas', p.familias],
              ['Hectáreas', p.hectareas ? (/^[\d.,\s]+$/.test(p.hectareas) ? p.hectareas + ' ha' : p.hectareas) : ''],
-             ['Conflicto con', p.grupo],
+             ['Conflicto con: (Grupo económico / empresario)', p.grupo],
              ['Relevamiento INAI', p.inai],
              ['Juzgado', p.juzgado]].forEach(function(kv){
-                if (kv[1]) html += '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px 3px 0;vertical-align:top;"><b>' + kv[0] + ':</b></td><td style="text-align:right;">' + esc(kv[1]) + '</td></tr>';
+                const etiqueta = kv[0].indexOf(':') >= 0 ? kv[0] : kv[0] + ':';
+                if (kv[1]) html += '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px 3px 0;vertical-align:top;"><b>' + etiqueta + '</b></td><td style="text-align:right;">' + esc(kv[1]) + '</td></tr>';
             });
             html += '</table>';
             if (p.observaciones) html += '<div style="margin-top:8px;background:rgba(244,63,94,0.08);border-left:3px solid #f43f5e;padding:6px 8px;font-size:0.72rem;line-height:1.35;color:#475569;max-height:120px;overflow-y:auto;">' + esc(p.observaciones) + '</div>';
