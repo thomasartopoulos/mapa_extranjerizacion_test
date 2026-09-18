@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-10T10:08:57Z",
+ "actualizado": "2026-09-18T10:09:04Z",
  "columnas": [
   "DATOS VISIBLES EN EL MAPA Provincia",
   "Departamento",
@@ -159,7 +159,7 @@
   },
   {
    "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
-   "Departamento": "General Taboada",
+   "Departamento": "Aguirre",
    "Localidad": "Pinto",
    "Comunidad / Caso": "El Chañaral (pueblo Sanavirón)",
    "ESTADO (activo / latente / resuelto)": "Activo",
@@ -213,12 +213,12 @@
    "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
    "Departamento": "Mitre",
    "Localidad": "",
-   "Comunidad / Caso": "Las Abras",
+   "Comunidad / Caso": "Las Abras - Comunidad Indígena Sentimiento de mi Tierra (pueblo Sanavirón)",
    "ESTADO (activo / latente / resuelto)": "",
    "Inicio del conflicto": "",
    "Cantidad de famlias afectadas": "",
    "Hectareas afectadas": "20000",
-   "Motivo del conflicto": "El empresario español intentó apropiarse de las 20 mil hectáreas pertenecientes al pueblo indígena Sanavirón",
+   "Motivo del conflicto": "El empresario español intentó apropiarse de las 20 mil hectáreas pertenecientes a la comunidad indígena Sentimiento de mi  Tierra perteneciente al pueblo Sanavirón",
    "Conflicto con: (Grupo económico / empresario)": "Alfonso Perez Barrau (español)",
    "Link": ""
   },
