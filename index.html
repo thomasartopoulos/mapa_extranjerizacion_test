@@ -219,7 +219,7 @@
                     <label><input type="checkbox" id="chk-mineria"> Proyectos Mineros <span class="layer-loading" id="load-mineria"></span></label>
                     <label><input type="checkbox" id="chk-comunidades"> Comunidades Originarias <span class="layer-loading" id="load-comunidades"></span></label>
                     <label><input type="checkbox" id="chk-predios"> Predios Referenciados <span class="layer-loading" id="load-predios"></span></label>
-                    <label><input type="checkbox" id="chk-aportes" checked> Conflictos Territoriales <span class="layer-loading" id="load-aportes"></span></label>
+                    <label><input type="checkbox" id="chk-aportes"> Conflictos Territoriales <span class="layer-loading" id="load-aportes"></span></label>
                     <label style="border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;margin-top:2px;"><input type="checkbox" id="chk-argenmap" checked> Base ArgenMap Oscuro (IGN)</label>
                 </div>
             </div>
@@ -997,35 +997,31 @@
 
         /* Alias tolerantes de encabezados. La columna de contacto del vocero NO
            está acá a propósito: es dato personal y no se publica. */
-        /* Encabezados EXACTOS de la planilla (normalizados: sin acentos, en
-           minúscula, sin espacios en los bordes). Sin sinónimos ni adivinanzas:
-           si un encabezado cambia en el Excel, hay que cambiarlo acá. */
         const SHEET_ALIAS = {
             provincia:    ['provincia'],
-            departamento: ['departamento'],
-            localidad:    ['localidad'],
-            comunidad:    ['comunidad / caso'],
-            estado:       ['estado (activo / latente / resuelto)'],
-            inicio:       ['inicio del conflicto'],
-            familias:     ['cantidad de famlias afectadas'],   // typo real de la planilla
-            hectareas:    ['hectareas afectadas'],
-            motivo:       ['motivo del conflicto'],
-            grupo:        ['conflicto con: (grupo economico / empresario)'],
-            enlace:       ['link'],
+            departamento: ['departamento', 'depto', 'partido'],
+            localidad:    ['localidad', 'paraje', 'lugar'],
             // columnas que escribe el Apps Script de Georef en la planilla
             provincia_norm:    ['provincia_norm'],
             departamento_norm: ['departamento_norm'],
             localidad_norm:    ['localidad_norm'],
-            lat:          ['lat'],
-            lon:          ['lon'],
-            precision:    ['precision'],
-            // sólo si estas columnas siguen existiendo con este nombre exacto;
-            // si no están, no matchean nada y el popup omite la fila
-            observaciones:['observaciones (represion, orden desalojo)'],
-            fuente:       ['fuente de informacion'],
-            juzgado:      ['juzgado/ dependencia judicial'],
-            otra_info:    ['otra info del conflicto (del caso/judicial)'],
-            inai:         ['situacion del relevamiento de inai (finalizado, en tramite, sin relevar)']
+            lat:          ['lat', 'latitud', 'latitude', 'y'],
+            lon:          ['lon', 'lng', 'long', 'longitud', 'longitude', 'x'],
+            precision:    ['precision', 'precision_geo', 'geo_precision'],
+            comunidad:    ['comunidad'],
+            inicio:       ['inicio del conflicto', 'inicio'],
+            familias:     ['cantidad de famlias afectadas', 'cantidad de familias afectadas', 'familias'],
+            hectareas:    ['hectareas afectadas', 'hectareas', 'superficie'],
+            motivo:       ['motivo del conflicto', 'motivo'],
+            grupo:        ['grupo economico/empresario', 'grupo economico', 'empresa'],
+            observaciones:['observaciones (represion, orden desalojo)', 'observaciones'],
+            estado:       ['estado'],
+            fuente:       ['fuente de informacion', 'fuente'],
+            enlace:       ['link', 'enlace', 'url'],
+            juzgado:      ['juzgado/ dependencia judicial', 'juzgado/dependencia judicial', 'juzgado'],
+            otra_info:    ['otra info del conflicto (del caso/judicial)', 'otra info del conflicto'],
+            inai:         ['situacion del relevamiento de inai (finalizado, en tramite, sin relevar)',
+                           'situacion del relevamiento de inai', 'inai']
         };
 
         /* Segunda línea de defensa: si una columna corrida mete un teléfono o un
@@ -1224,11 +1220,10 @@
              ['Motivo', p.motivo],
              ['Familias afectadas', p.familias],
              ['Hectáreas', p.hectareas ? (/^[\d.,\s]+$/.test(p.hectareas) ? p.hectareas + ' ha' : p.hectareas) : ''],
-             ['Conflicto con: (Grupo económico / empresario)', p.grupo],
+             ['Grupo económico', p.grupo],
              ['Relevamiento INAI', p.inai],
              ['Juzgado', p.juzgado]].forEach(function(kv){
-                const etiqueta = kv[0].indexOf(':') >= 0 ? kv[0] : kv[0] + ':';
-                if (kv[1]) html += '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px 3px 0;vertical-align:top;"><b>' + etiqueta + '</b></td><td style="text-align:right;">' + esc(kv[1]) + '</td></tr>';
+                if (kv[1]) html += '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:3px 6px 3px 0;vertical-align:top;"><b>' + kv[0] + ':</b></td><td style="text-align:right;">' + esc(kv[1]) + '</td></tr>';
             });
             html += '</table>';
             if (p.observaciones) html += '<div style="margin-top:8px;background:rgba(244,63,94,0.08);border-left:3px solid #f43f5e;padding:6px 8px;font-size:0.72rem;line-height:1.35;color:#475569;max-height:120px;overflow-y:auto;">' + esc(p.observaciones) + '</div>';
@@ -1275,14 +1270,7 @@
                 const resp = await fetch(CONFLICTOS_JSON + '?_cb=' + Date.now());
                 if (resp.ok) {
                     const j = await resp.json();
-                    /* conflictos.json puede venir con claves internas (formato
-                       viejo) o con los encabezados textuales del Excel, en el
-                       orden de la planilla (formato nuevo del script). En el
-                       segundo caso se remapea con el mismo emparejador que usa
-                       la lectura de CSV. */
-                    const crudas = Array.isArray(j) ? j : (j.filas || []);
-                    const filas = remapearFilasJSON(crudas,
-                        (!Array.isArray(j) && j.columnas) || null);
+                    const filas = Array.isArray(j) ? j : (j.filas || []);
                     const fc = filasAGeoJSON(filas);
                     if (fc.features.length) {
                         aportesOrigen = 'json';
@@ -1297,28 +1285,6 @@
             _aportesCache = filasAGeoJSON(APORTES_FILAS);
             return _aportesCache;
         }
-        /* Convierte filas cuyas claves son los encabezados textuales del Excel
-           al vocabulario interno del mapa (provincia, lat, lon, grupo, …).
-           Si las filas ya vienen con claves internas, se devuelven tal cual. */
-        function remapearFilasJSON(filas, columnas){
-            if (!filas.length || filas[0].provincia !== undefined) return filas;
-            const headersOrig = (columnas && columnas.length)
-                ? columnas : Object.keys(filas[0]);
-            const idx = mapearEncabezados(headersOrig.map(normHeader));
-            if (idx.provincia == null) {
-                console.warn('conflictos.json sin columna Provincia:', headersOrig);
-                return [];
-            }
-            return filas.map(function(f){
-                const r = {};
-                Object.keys(idx).forEach(function(k){
-                    const crudo = String(f[headersOrig[idx[k]]] || '').trim();
-                    r[k] = (k === 'lat' || k === 'lon') ? crudo : redactarPII(crudo);
-                });
-                return r;
-            }).filter(r => Object.keys(r).some(k => r[k]));
-        }
-
         /* El origen y la cantidad quedan sólo en la consola: la leyenda muestra
            una sola referencia y no un contador. */
         function marcarEstadoAportes(n){
@@ -1443,7 +1409,7 @@
                 marcarEstadoAportes(0);
                 return;
             }
-            chk.dispatchEvent(new Event('change'));
+            if (chk.checked) chk.dispatchEvent(new Event('change'));
         })();
 
         const PREDIOS_ZOOM_UMBRAL = 9;
@@ -1758,6 +1724,44 @@
         }
         function expSlug(s){ return String(s||'mapa').toLowerCase().replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'') || 'mapa'; }
 
+        /* Recuadro Antártida Argentina e Islas del Atlántico Sur: sólo dibujo (proyección polar), no entra en estadísticas ni ranking. */
+        function expEsIslasAS(nombre){ const n=(nombre||'').toLowerCase(); return n.indexOf('atlántico sur')>=0 || n.indexOf('atlantico sur')>=0; }
+        function expDrawAntartidaInset(ctx, feats, x, y, w, h){
+            const polys = [];
+            feats.forEach(function(f){
+                const g = f && f.geometry; if(!g) return;
+                (g.type==='Polygon' ? [g.coordinates] : (g.type==='MultiPolygon' ? g.coordinates : [])).forEach(function(p){ polys.push(p); });
+            });
+            if(!polys.length) return;
+            const L0 = -49.5, RAD = Math.PI/180;
+            function proj(pt){ const r = 90 + pt[1], a = (pt[0]-L0)*RAD; return [r*Math.sin(a), -r*Math.cos(a)]; }
+            let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;
+            polys.forEach(p=>p.forEach(ring=>ring.forEach(pt=>{ const q=proj(pt); if(q[0]<minx)minx=q[0]; if(q[0]>maxx)maxx=q[0]; if(q[1]<miny)miny=q[1]; if(q[1]>maxy)maxy=q[1]; })));
+            if(!isFinite(minx) || maxx<=minx || maxy<=miny) return;
+            ctx.save();
+            ctx.fillStyle='rgba(15,23,42,0.92)'; ctx.fillRect(x, y, w, h);
+            ctx.strokeStyle='#334155'; ctx.lineWidth=1; ctx.strokeRect(x+0.5, y+0.5, w-1, h-1);
+            ctx.textBaseline='top'; ctx.textAlign='center';
+            let tf = 10; ctx.fillStyle='#cbd5e1'; ctx.font='600 '+tf+'px Montserrat, sans-serif';
+            while(ctx.measureText('E ISLAS DEL ATLÁNTICO SUR').width > w-10 && tf > 7){ tf -= 0.5; ctx.font='600 '+tf+'px Montserrat, sans-serif'; }
+            ctx.fillText('ANTÁRTIDA ARGENTINA', x+w/2, y+6);
+            ctx.fillText('E ISLAS DEL ATLÁNTICO SUR', x+w/2, y+19);
+            const top = y+36, bot = y+h-20, pad = 8;
+            const sc = Math.min((w-2*pad)/(maxx-minx), (bot-top)/(maxy-miny));
+            const ox = x + (w-(maxx-minx)*sc)/2, oy = top + ((bot-top)-(maxy-miny)*sc)/2;
+            function P(pt){ const q=proj(pt); return [ox+(q[0]-minx)*sc, oy+(q[1]-miny)*sc]; }
+            ctx.setLineDash([3,3]); ctx.lineWidth=0.8; ctx.strokeStyle='#64748b';
+            [-74,-25].forEach(function(lon){ const a=P([lon,-90]), b=P([lon,-60]); ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke(); });
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            polys.forEach(p=>p.forEach(ring=>{ ring.forEach((pt,i)=>{ const q=P(pt); if(i===0) ctx.moveTo(q[0],q[1]); else ctx.lineTo(q[0],q[1]); }); ctx.closePath(); }));
+            ctx.fillStyle='#64748b'; ctx.fill('evenodd');
+            ctx.lineJoin='round'; ctx.lineWidth=0.6; ctx.strokeStyle='#cbd5e1'; ctx.stroke();
+            ctx.fillStyle='#64748b'; ctx.font='400 10px Montserrat, sans-serif';
+            ctx.fillText('sin datos RNTR', x+w/2, y+h-15);
+            ctx.restore();
+        }
+
         function expDrawChoropleth(ctx, feats, x, y, w, h, selUid){
             let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;
             function eachPt(geom,cb){
@@ -1787,6 +1791,22 @@
                 const sel = draw.find(f=>f.properties._uid==selUid);
                 if(sel){ pathGeom(sel.geometry); ctx.fillStyle=sel.properties._color||'#334155'; ctx.fill('evenodd'); ctx.lineWidth=3; ctx.strokeStyle='#ffffff'; ctx.stroke(); }
             }
+            /* Islas del Atlántico Sur: las partes que caen dentro del encuadre (Malvinas en el mapa nacional) se dibujan en su lugar, en gris y sin datos */
+            const isl = feats.find(f=>f.geometry && expEsIslasAS(f.properties.nombre));
+            if(isl){
+                const ip = isl.geometry.type==='Polygon' ? [isl.geometry.coordinates] : (isl.geometry.type==='MultiPolygon' ? isl.geometry.coordinates : []);
+                ctx.beginPath();
+                ip.forEach(function(poly){
+                    let ok = true;
+                    poly[0].forEach(function(pt){ if(pt[0]<minx||pt[0]>maxx||pt[1]<miny||pt[1]>maxy) ok=false; });
+                    if(!ok) return;
+                    poly.forEach(ring=>{ ring.forEach((pt,i)=>{ const q=P(pt); if(i===0)ctx.moveTo(q[0],q[1]); else ctx.lineTo(q[0],q[1]); }); ctx.closePath(); });
+                });
+                ctx.fillStyle='#64748b'; ctx.fill('evenodd'); ctx.lineWidth=0.6; ctx.strokeStyle='#cbd5e1'; ctx.stroke();
+            }
+            const insetFeats = feats.filter(f=>f.geometry && (esAntartida(f.properties.nombre) || expEsIslasAS(f.properties.nombre)));
+            const insetH = feats.some(f=>f.properties.provincia!==feats[0].properties.provincia) ? 190 : 150;
+            if(insetFeats.length) expDrawAntartidaInset(ctx, insetFeats, x+w-122, y+h-insetH, 132, insetH);
         }
 
         function expDrawMapaExport(uid){
