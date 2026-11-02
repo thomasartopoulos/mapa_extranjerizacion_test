@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-09-18T10:09:04Z",
+ "actualizado": "2026-11-02T13:58:45Z",
  "columnas": [
   "DATOS VISIBLES EN EL MAPA Provincia",
   "Departamento",
@@ -117,6 +117,45 @@
    "Motivo del conflicto": "Desmonte",
    "Conflicto con: (Grupo económico / empresario)": "Desdelsur SA. (Macera y Blaquier)",
    "Link": "infoterritorial   https://www.pagina12.com.ar/2026/08/03/denuncian-un-desmonte-en-territorio-de-uso-ancestral-de-comunidades-originarias/"
+  },
+  {
+   "DATOS VISIBLES EN EL MAPA Provincia": "Salta",
+   "Departamento": "La Poma",
+   "Localidad": "La Poma",
+   "Comunidad / Caso": "Comunidad Diaguita San Miguel La Poma",
+   "ESTADO (activo / latente / resuelto)": "Latente",
+   "Inicio del conflicto": "1980",
+   "Cantidad de famlias afectadas": "",
+   "Hectareas afectadas": "",
+   "Motivo del conflicto": "Remate de los activos del Ex Banco Oddone, territorio dentro del cual tiene posesión ancestral y preexistencia la comunidad. La comunidad se presentó e impidió procesalmente el remate. La justicia federal ordenó la realización del relevamiento de sus tierras.",
+   "Conflicto con: (Grupo económico / empresario)": "Quiebra del Ex Banco Oddone S.A. / Sindico",
+   "Link": "https://www.fiscales.gob.ar/fiscalias/la-camara-comercial-siguio-el-criterio-de-la-fiscal-boquin-y-suspendio-la-venta-de-tierras-reivindicadas-por-comunidades-indigenas/"
+  },
+  {
+   "DATOS VISIBLES EN EL MAPA Provincia": "Salta",
+   "Departamento": "La Poma",
+   "Localidad": "La Poma",
+   "Comunidad / Caso": "Comunidad Diaguita Rodeo La Poma",
+   "ESTADO (activo / latente / resuelto)": "Latente",
+   "Inicio del conflicto": "",
+   "Cantidad de famlias afectadas": "",
+   "Hectareas afectadas": "",
+   "Motivo del conflicto": "Intento de Empresa Minera de ingresar/avanzar a través del territorio con máquinas pesadas",
+   "Conflicto con: (Grupo económico / empresario)": "No identificado",
+   "Link": "https://www.radionacional.com.ar/comunidades-indigenas-en-salta-le-dicen-no-a-la-mineria/"
+  },
+  {
+   "DATOS VISIBLES EN EL MAPA Provincia": "Salta",
+   "Departamento": "Cachi",
+   "Localidad": "",
+   "Comunidad / Caso": "Comunidad Diaguita La Aguada/ Las Trancas / El Algarrobal:",
+   "ESTADO (activo / latente / resuelto)": "Activo",
+   "Inicio del conflicto": "",
+   "Cantidad de famlias afectadas": "",
+   "Hectareas afectadas": "",
+   "Motivo del conflicto": "Titular registral está vendiendo el territorio con la comunidad dentro",
+   "Conflicto con: (Grupo económico / empresario)": "Sergio Durand",
+   "Link": ""
   },
   {
    "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
