@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-02T13:58:45Z",
+ "actualizado": "2026-11-13T13:31:09Z",
  "columnas": [
   "DATOS VISIBLES EN EL MAPA Provincia",
   "Departamento",
@@ -211,7 +211,7 @@
   },
   {
    "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
-   "Departamento": "Gral Taboada",
+   "Departamento": "General Taboada",
    "Localidad": "Añatuya",
    "Comunidad / Caso": "Suncho Pozo \"El Triunfo\"  (pueblo Vilela)",
    "ESTADO (activo / latente / resuelto)": "",
@@ -224,7 +224,7 @@
   },
   {
    "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
-   "Departamento": "Gral Taboada",
+   "Departamento": "General Taboada",
    "Localidad": "La Simona",
    "Comunidad / Caso": "La Simona",
    "ESTADO (activo / latente / resuelto)": "",
@@ -237,7 +237,7 @@
   },
   {
    "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
-   "Departamento": "Gral Taboada",
+   "Departamento": "General Taboada",
    "Localidad": "Añatuya",
    "Comunidad / Caso": "Lote 48 - Comunidad Nockaishpa Pachamama (pueblo Vilela)",
    "ESTADO (activo / latente / resuelto)": "Activo",
@@ -273,6 +273,32 @@
    "Motivo del conflicto": "",
    "Conflicto con: (Grupo económico / empresario)": "Flavian Strokov",
    "Link": "https://www.facebook.com/story.php?story_fbid=887578560077137&id=100064750024394#"
+  },
+  {
+   "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
+   "Departamento": "Moreno",
+   "Localidad": "Roversi",
+   "Comunidad / Caso": "El Urunday",
+   "ESTADO (activo / latente / resuelto)": "Activo",
+   "Inicio del conflicto": "",
+   "Cantidad de famlias afectadas": "1",
+   "Hectareas afectadas": "",
+   "Motivo del conflicto": "Desalojo",
+   "Conflicto con: (Grupo económico / empresario)": "Abel Parra y Ríos Guillermo Marcelino",
+   "Link": "https://www.mocase.org.ar/noticias/nuevo-atropello-los-derechos-del-campesinado\nhttps://www.mocase.org.ar/noticias/nuevo-atropello-los-derechos-del-campesinado\nhttps://telesisaoficial.wordpress.com/2026/09/16/el-monte-que-esta-quedando-es-ese-porque-lo-cuidamos/"
+  },
+  {
+   "DATOS VISIBLES EN EL MAPA Provincia": "Santiago del Estero",
+   "Departamento": "Copo",
+   "Localidad": "El Cabure",
+   "Comunidad / Caso": "5 hermanos",
+   "ESTADO (activo / latente / resuelto)": "Activo",
+   "Inicio del conflicto": "",
+   "Cantidad de famlias afectadas": "3",
+   "Hectareas afectadas": "2500",
+   "Motivo del conflicto": "Desalojo",
+   "Conflicto con: (Grupo económico / empresario)": "Isabel Salas “Chavela”",
+   "Link": "https://www.instagram.com/p/DfDwrBZN-jk/\nhttps://infoterritorial.com.ar/comunidad-lule-vilela-la-armonia-resiste-intento-de-desalojo/"
   },
   {
    "DATOS VISIBLES EN EL MAPA Provincia": "Catamarca",
